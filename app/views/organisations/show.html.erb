@@ -1,0 +1,40 @@
+<h1>Adnat</h1>
+<% if !current_user.nil? %>
+  <p>Logged in as <%= current_user.name %></p>
+  <p><% current_user.organisation.nil? ? "You are currently not a member of an organisaztion" : "" %></p>
+<% end %>
+<h1><%= @organisation.name %></h1>
+<h2>Shifts</h2>
+<table style="width:100%">
+  <tr>
+    <th>Employee Name</th>
+    <th>Shift Date</th>
+    <th>Start Time</th>
+    <th>Finish Time</th>
+    <th>Break Length (Minutes)</th>
+    <th>Hours Worked</th>
+    <th>Shift Cost</th>
+  </tr>
+  <% @shifts.each do |shift| %>
+    <tr>
+      <td><%= shift.user.name %></td>
+      <td><%= shift.start.strftime("%m/%d/%Y")  %></td>
+      <td><%= shift.start.strftime("%I:%M %p") %></td>
+      <td><%= shift.finish.strftime("%I:%M %p") %></td>
+      <td><%= shift.break_length %></td>
+      <td><%= shift.hours_worked.round(1) %></td>
+      <td>$<%= shift.cost.round(2) %></td>
+    </tr>
+  <% end %>
+  <%= simple_form_for @shift do |f| %>
+    <tr>
+      <td><%= current_user.name %></td>
+      <td><%= f.input :date, as: :date, label: false %></td>
+      <td><%= f.input :start_time, as: :time, label: false %></td>
+      <td><%= f.input :finish_time, as: :time, label: false %></td>
+      <td><%= f.input :break_length, label: false %></td>
+      <%= hidden_field_tag(:organisation_id, @organisation.id) %>
+      <td colspan="2"><%= f.button :submit %></td>
+    </tr>
+  <% end %>
+</table>

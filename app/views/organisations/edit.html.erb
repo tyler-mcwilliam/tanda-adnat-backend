@@ -1,0 +1,13 @@
+<h1>Adnat</h1>
+<% if !current_user.nil? %>
+  <p>Logged in as <%= current_user.name %></p>
+  <p><% current_user.organisation.nil? ? "You are currently not a member of an organisaztion" : "" %></p>
+<% end %>
+<h1><%= @organisation.name %></h1>
+<h1>Edit Organisation</h1>
+<%= simple_form_for @organisation do |f| %>
+  <%= f.input :name %>
+  <%= f.input :hourly_rate %>
+  <%= f.button :submit %>
+<% end %>
+<%= link_to "Delete", organisation_path(@organisation), method: :delete, data: { confirm: 'Are you sure?' } %>

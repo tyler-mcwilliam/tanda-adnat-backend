@@ -1,2 +1,31 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<h1>Adnat</h1>
+<% if !current_user.nil? && !current_user.organisation_id %>
+  <p>Logged in as <%= current_user.name %></p>
+  <p><% current_user.organisation.nil? ? "You are currently not a member of an organisaztion" : "" %></p>
+  <h1>Organisations</h1>
+  <% @organisations.each do |organisation| %>
+    <ul><%= organisation.name %> <%= link_to "Edit", edit_organisation_path(organisation) %>
+      <% if current_user.organisation_id == nil%>
+        <%= link_to 'Join', join_organisation_path(organisation) %>
+      <% end %>
+    </ul>
+  <% end %>
+  <h1>Create Organisation</h1>
+  <%= simple_form_for @organisation do |f| %>
+    <%= f.input :name %>
+    <%= f.input :hourly_rate %>
+    <%= f.button :submit %>
+  <% end %>
+<% end %>
+
+<% if !current_user.nil? && current_user.organisation_id %>
+  <p>Logged in as <%= current_user.name %></p>
+  <h1><%= current_user.organisation.name %></h1>
+  <p>
+    <%= link_to "View Shifts", organisation_path(current_user.organisation) %>
+    <%= link_to "Edit", edit_organisation_path(current_user.organisation) %>
+    <% if current_user.organisation_id == current_user.organisation_id %>
+      <%= link_to 'Leave', leave_organisation_path(current_user.organisation) %>
+    <% end %>
+  </p>
+  <% end %>
