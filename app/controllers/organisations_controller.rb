@@ -1,5 +1,5 @@
 class OrganisationsController < ApplicationController
-  before_action :set_organisation, only: [:show, :new, :edit, :update, :destroy]
+  before_action :set_organisation, only: [:show, :edit, :destroy, :update, :leave, :join]
 
   def index
     @organisations = Organisation.all if current_user.nil?
@@ -20,8 +20,8 @@ class OrganisationsController < ApplicationController
 
   def create
     @organisation = Organisation.new(organisation_params)
-    current_user.organisation = @organisation
     if @organisation.save
+      current_user.update_attribute(:organisation_id, @organisation.id)
       redirect_to organisation_path(@organisation)
     else
       @organisation = Organisation.new(organisation_params)
@@ -35,18 +35,18 @@ class OrganisationsController < ApplicationController
   end
 
   def destroy
+    Shift.all.where(organisation_id: @organisation.id).each(&:destroy)
     @organisation.destroy
     redirect_to root_path
   end
 
   def join
-    @organisation = Organisation.find params[:id]
     current_user.update_attribute(:organisation_id, @organisation.id)
     redirect_to @organisation
   end
 
   def leave
-    @organisation = Organisation.find params[:id]
+    Shift.all.where(organisation_id: @organisation.id).where(user_id: current_user.id).each(&:destroy)
     current_user.update_attribute(:organisation_id, nil)
     redirect_to root_path
   end
@@ -58,6 +58,6 @@ class OrganisationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = Organisation.find(current_user.organisation_id)
+    @organisation = Organisation.find params[:id]
   end
 end

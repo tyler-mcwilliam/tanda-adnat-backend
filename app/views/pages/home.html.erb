@@ -1,7 +1,7 @@
 <h1>Adnat</h1>
 <% if !current_user.nil? && !current_user.organisation_id %>
   <p>Logged in as <%= current_user.name %></p>
-  <p><% current_user.organisation.nil? ? "You are currently not a member of an organisaztion" : "" %></p>
+  <p>You are currently not a member of an organisation</p>
   <h1>Organisations</h1>
   <% @organisations.each do |organisation| %>
     <ul><%= organisation.name %> <%= link_to "Edit", edit_organisation_path(organisation) %>
