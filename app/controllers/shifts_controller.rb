@@ -1,8 +1,5 @@
 class ShiftsController < ApplicationController
-  # skip_before_action :authenticate_user!, only: [:new, :index]
-
   def index
-    @shifts = shift.all if current_user.nil?
   end
 
   def show
@@ -47,11 +44,5 @@ class ShiftsController < ApplicationController
   def destroy
     @shift.destroy
     redirect_to root
-  end
-
-  private
-
-  def set_shift
-    @shift = shift.find(params[:id])
   end
 end
